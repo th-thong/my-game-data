@@ -60,5 +60,6 @@ push_to_github:
     - apk add git
   script:
     - git remote add github https://th-thong:${GITHUB_TOKEN}@${GITHUB_REPO_URL}
+    - git checkout ${CI_COMMIT_REF_NAME}
     - git push github HEAD:${CI_COMMIT_REF_NAME} --force
     - git push github --tags --force
