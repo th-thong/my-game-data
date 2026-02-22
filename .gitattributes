@@ -1,0 +1,78 @@
+* text=auto eol=lf
+
+
+*.sh        text eol=lf
+*.bash      text eol=lf
+*.zsh       text eol=lf
+*.css       text
+*.html      text
+*.md        text
+*.txt       text
+*.xml       text
+*.yaml      text
+*.yml       text
+*.json      text
+*.config    text
+
+
+*.bat       text eol=crlf
+*.cmd       text eol=crlf
+*.ps1       text eol=crlf
+
+
+
+*.py diff=python
+
+
+*.sqlite3   binary
+*.db        binary
+
+
+
+*.js        text
+*.jsx       text
+*.ts        text
+*.tsx       text
+*.mjs       text
+*.cjs       text
+
+
+package-lock.json text
+yarn.lock         text
+pnpm-lock.yaml    text
+
+
+
+# Img
+*.png       binary
+*.jpg       binary
+*.jpeg      binary
+*.gif       binary
+*.ico       binary
+*.svg       text
+*.webp      binary
+
+# Fonts
+*.ttf       binary
+*.eot       binary
+*.otf       binary
+*.woff      binary
+*.woff2     binary
+
+# Documents & Archives
+*.pdf       binary
+*.doc       binary
+*.docx      binary
+*.xls       binary
+*.xlsx      binary
+*.ppt       binary
+*.pptx      binary
+*.zip       binary
+*.tar       binary
+*.gz        binary
+*.7z        binary
+
+
+*.min.js    linguist-generated
+*.min.css   linguist-generated
+*.map       linguist-generated
