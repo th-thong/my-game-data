@@ -6,3 +6,5 @@ local
 .gitignore
 .gitlab-ci.yml
 docker-compose.yml
+mongodb_data/
+tmp/

@@ -58,3 +58,4 @@ go.work
 local
 .env
 mongo_local
+mongodb_data

@@ -11,6 +11,7 @@ import (
 
 	"gitlab.com/my-game873206/my-game-data/graph/generated"
 	"gitlab.com/my-game873206/my-game-data/graph/model"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -29,9 +30,38 @@ func (r *mutationResolver) CreateCharacter(ctx context.Context, input model.NewC
 	return &newChar, nil
 }
 
-// Empty is the resolver for the _empty field.
-func (r *queryResolver) Empty(ctx context.Context) (*string, error) {
-	panic(fmt.Errorf("not implemented: Empty - _empty"))
+// GetCharacter is the resolver for the getCharacter field.
+func (r *queryResolver) GetCharacter(ctx context.Context, id string) (*model.Character, error) {
+	objId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, fmt.Errorf("ID invalid, %w", err)
+	}
+	var character model.Character
+	filter := bson.M{"_id": objId}
+	err = r.DB.Collection("character").FindOne(ctx, filter).Decode(&character)
+
+	if err != nil {
+		return nil, err
+	}
+	return &character, nil
+}
+
+// ListCharacter is the resolver for the listCharacter field.
+func (r *queryResolver) ListCharacter(ctx context.Context) ([]*model.Character, error) {
+
+	var characters []*model.Character
+	cursor, err := r.DB.Collection("character").Find(ctx, bson.M{})
+
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(ctx)
+
+	if err := cursor.All(ctx, &characters); err != nil {
+		return nil, err
+	}
+
+	return characters, nil
 }
 
 // Mutation returns generated.MutationResolver implementation.
@@ -42,3 +72,28 @@ func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
 
 type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
+
+// !!! WARNING !!!
+// The code below was going to be deleted when updating resolvers. It has been copied here so you have
+// one last chance to move it out of harms way if you want. There are two reasons this happens:
+//  - When renaming or deleting a resolver the old code will be put in here. You can safely delete
+//    it when you're done.
+//  - You have helper methods in this file. Move them out to keep these resolver files clean.
+/*
+	func (r *queryResolver) ListCharcter(ctx context.Context) ([]*model.Character, error) {
+
+	var characters []*model.Character
+	cursor, err := r.DB.Collection("character").Find(ctx, bson.M{})
+
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(ctx)
+
+	if err := cursor.All(ctx, &characters); err != nil {
+		return nil, err
+	}
+
+	return characters, nil
+}
+*/
