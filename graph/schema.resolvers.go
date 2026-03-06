@@ -11,8 +11,7 @@ import (
 
 	"gitlab.com/my-game873206/my-game-data/graph/generated"
 	"gitlab.com/my-game873206/my-game-data/graph/model"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/v2/bson"
 )
 
 // CreateCharacter is the resolver for the createCharacter field.
@@ -31,7 +30,7 @@ func (r *mutationResolver) CreateCharacter(ctx context.Context, input model.NewC
 	if err != nil {
 		return nil, fmt.Errorf("Cannot create char: %v", err)
 	}
-	newChar.ID = res.InsertedID.(primitive.ObjectID).Hex()
+	newChar.ID = res.InsertedID.(bson.ObjectID).Hex()
 	return &newChar, nil
 }
 
@@ -51,13 +50,13 @@ func (r *mutationResolver) CreateWeapon(ctx context.Context, input model.NewWeap
 	if err != nil {
 		return nil, fmt.Errorf("Cannot create char: %v", err)
 	}
-	newChar.ID = res.InsertedID.(primitive.ObjectID).Hex()
+	newChar.ID = res.InsertedID.(bson.ObjectID).Hex()
 	return &newChar, nil
 }
 
 // GetCharacter is the resolver for the getCharacter field.
 func (r *queryResolver) GetCharacter(ctx context.Context, id string) (*model.Character, error) {
-	objId, err := primitive.ObjectIDFromHex(id)
+	objId, err := bson.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, fmt.Errorf("ID invalid, %w", err)
 	}
@@ -90,7 +89,7 @@ func (r *queryResolver) ListCharacter(ctx context.Context) ([]*model.Character, 
 
 // GetWeapon is the resolver for the getWeapon field.
 func (r *queryResolver) GetWeapon(ctx context.Context, id string) (*model.Weapon, error) {
-	objId, err := primitive.ObjectIDFromHex(id)
+	objId, err := bson.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, fmt.Errorf("ID invalid, %w", err)
 	}
