@@ -17,6 +17,12 @@ import (
 
 // CreateCharacter is the resolver for the createCharacter field.
 func (r *mutationResolver) CreateCharacter(ctx context.Context, input model.NewCharacterData) (*model.Character, error) {
+	
+	userId := ctx.Value("user_id")
+	if userId == nil {
+		return nil, fmt.Errorf("Access denied")
+	}
+
 	newChar := model.Character{
 		Name:      input.Name,
 		RoundIcon: input.RoundIcon,
