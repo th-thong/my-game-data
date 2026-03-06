@@ -46,7 +46,8 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		Empty func(childComplexity int) int
+		GetCharacter  func(childComplexity int, id string) int
+		ListCharacter func(childComplexity int) int
 	}
 }
 
@@ -54,7 +55,8 @@ type MutationResolver interface {
 	CreateCharacter(ctx context.Context, input model.NewCharacterData) (*model.Character, error)
 }
 type QueryResolver interface {
-	Empty(ctx context.Context) (*string, error)
+	GetCharacter(ctx context.Context, id string) (*model.Character, error)
+	ListCharacter(ctx context.Context) ([]*model.Character, error)
 }
 
 type executableSchema graphql.ExecutableSchemaState[ResolverRoot, DirectiveRoot, ComplexityRoot]
@@ -90,24 +92,36 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.ComplexityRoot.Character.RoundIcon(childComplexity), true
 
-	case "Mutation.CreateCharacter":
+	case "Mutation.createCharacter":
 		if e.ComplexityRoot.Mutation.CreateCharacter == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_CreateCharacter_args(ctx, rawArgs)
+		args, err := ec.field_Mutation_createCharacter_args(ctx, rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
 		return e.ComplexityRoot.Mutation.CreateCharacter(childComplexity, args["input"].(model.NewCharacterData)), true
 
-	case "Query._empty":
-		if e.ComplexityRoot.Query.Empty == nil {
+	case "Query.getCharacter":
+		if e.ComplexityRoot.Query.GetCharacter == nil {
 			break
 		}
 
-		return e.ComplexityRoot.Query.Empty(childComplexity), true
+		args, err := ec.field_Query_getCharacter_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.ComplexityRoot.Query.GetCharacter(childComplexity, args["id"].(string)), true
+
+	case "Query.listCharacter":
+		if e.ComplexityRoot.Query.ListCharacter == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Query.ListCharacter(childComplexity), true
 
 	}
 	return 0, false
@@ -198,18 +212,19 @@ var sources = []*ast.Source{
   roundIcon:String!
 }
 
-type Query {
-    _empty: String
-}
-
-type Mutation {
-  CreateCharacter(input: NewCharacterData!): Character!
-}
-
 type Character {
   id: ID!
   name:String!
   roundIcon:String!
+}
+
+type Query {
+    getCharacter(id: String!): Character
+    listCharacter:[Character!]!
+}
+
+type Mutation {
+  createCharacter(input: NewCharacterData!): Character!
 }`, BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)
@@ -218,7 +233,7 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 
 // region    ***************************** args.gotpl *****************************
 
-func (ec *executionContext) field_Mutation_CreateCharacter_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+func (ec *executionContext) field_Mutation_createCharacter_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
 	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "input", ec.unmarshalNNewCharacterData2gitlabᚗcomᚋmyᚑgame873206ᚋmyᚑgameᚑdataᚋgraphᚋmodelᚐNewCharacterData)
@@ -237,6 +252,17 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 		return nil, err
 	}
 	args["name"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_getCharacter_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNString2string)
+	if err != nil {
+		return nil, err
+	}
+	args["id"] = arg0
 	return args, nil
 }
 
@@ -379,12 +405,12 @@ func (ec *executionContext) fieldContext_Character_roundIcon(_ context.Context, 
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_CreateCharacter(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Mutation_createCharacter(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
 		field,
-		ec.fieldContext_Mutation_CreateCharacter,
+		ec.fieldContext_Mutation_createCharacter,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
 			return ec.Resolvers.Mutation().CreateCharacter(ctx, fc.Args["input"].(model.NewCharacterData))
@@ -396,7 +422,7 @@ func (ec *executionContext) _Mutation_CreateCharacter(ctx context.Context, field
 	)
 }
 
-func (ec *executionContext) fieldContext_Mutation_CreateCharacter(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_createCharacter(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -421,37 +447,94 @@ func (ec *executionContext) fieldContext_Mutation_CreateCharacter(ctx context.Co
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_CreateCharacter_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_createCharacter_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Query__empty(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Query_getCharacter(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
 		field,
-		ec.fieldContext_Query__empty,
+		ec.fieldContext_Query_getCharacter,
 		func(ctx context.Context) (any, error) {
-			return ec.Resolvers.Query().Empty(ctx)
+			fc := graphql.GetFieldContext(ctx)
+			return ec.Resolvers.Query().GetCharacter(ctx, fc.Args["id"].(string))
 		},
 		nil,
-		ec.marshalOString2ᚖstring,
+		ec.marshalOCharacter2ᚖgitlabᚗcomᚋmyᚑgame873206ᚋmyᚑgameᚑdataᚋgraphᚋmodelᚐCharacter,
 		true,
 		false,
 	)
 }
 
-func (ec *executionContext) fieldContext_Query__empty(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_getCharacter(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Character_id(ctx, field)
+			case "name":
+				return ec.fieldContext_Character_name(ctx, field)
+			case "roundIcon":
+				return ec.fieldContext_Character_roundIcon(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Character", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_getCharacter_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_listCharacter(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Query_listCharacter,
+		func(ctx context.Context) (any, error) {
+			return ec.Resolvers.Query().ListCharacter(ctx)
+		},
+		nil,
+		ec.marshalNCharacter2ᚕᚖgitlabᚗcomᚋmyᚑgame873206ᚋmyᚑgameᚑdataᚋgraphᚋmodelᚐCharacterᚄ,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Query_listCharacter(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Character_id(ctx, field)
+			case "name":
+				return ec.fieldContext_Character_name(ctx, field)
+			case "roundIcon":
+				return ec.fieldContext_Character_roundIcon(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Character", field.Name)
 		},
 	}
 	return fc, nil
@@ -2120,9 +2203,9 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Mutation")
-		case "CreateCharacter":
+		case "createCharacter":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_CreateCharacter(ctx, field)
+				return ec._Mutation_createCharacter(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
@@ -2169,7 +2252,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Query")
-		case "_empty":
+		case "getCharacter":
 			field := field
 
 			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
@@ -2178,7 +2261,29 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query__empty(ctx, field)
+				res = ec._Query_getCharacter(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "listCharacter":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_listCharacter(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
 				return res
 			}
 
@@ -2574,6 +2679,22 @@ func (ec *executionContext) marshalNCharacter2gitlabᚗcomᚋmyᚑgame873206ᚋm
 	return ec._Character(ctx, sel, &v)
 }
 
+func (ec *executionContext) marshalNCharacter2ᚕᚖgitlabᚗcomᚋmyᚑgame873206ᚋmyᚑgameᚑdataᚋgraphᚋmodelᚐCharacterᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Character) graphql.Marshaler {
+	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
+		fc := graphql.GetFieldContext(ctx)
+		fc.Result = &v[i]
+		return ec.marshalNCharacter2ᚖgitlabᚗcomᚋmyᚑgame873206ᚋmyᚑgameᚑdataᚋgraphᚋmodelᚐCharacter(ctx, sel, v[i])
+	})
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
 func (ec *executionContext) marshalNCharacter2ᚖgitlabᚗcomᚋmyᚑgame873206ᚋmyᚑgameᚑdataᚋgraphᚋmodelᚐCharacter(ctx context.Context, sel ast.SelectionSet, v *model.Character) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
@@ -2790,6 +2911,13 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	_ = ctx
 	res := graphql.MarshalBoolean(*v)
 	return res
+}
+
+func (ec *executionContext) marshalOCharacter2ᚖgitlabᚗcomᚋmyᚑgame873206ᚋmyᚑgameᚑdataᚋgraphᚋmodelᚐCharacter(ctx context.Context, sel ast.SelectionSet, v *model.Character) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Character(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOString2ᚖstring(ctx context.Context, v any) (*string, error) {

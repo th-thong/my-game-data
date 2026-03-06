@@ -9,7 +9,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}/my-game-data
+  IMAGE_NAME: ${{ github.repository }}
   DOCKERFILE_PATH: ./Dockerfile
 
 jobs:

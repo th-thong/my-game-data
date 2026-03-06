@@ -1,37 +1,37 @@
 package main
 
 import (
-	"time"
+	"context"
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/handler/extension"
 	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"github.com/99designs/gqlgen/graphql/playground"
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"gitlab.com/my-game873206/my-game-data/graph"
 	"gitlab.com/my-game873206/my-game-data/graph/generated"
 	"gitlab.com/my-game873206/my-game-data/internal/db"
+	"gitlab.com/my-game873206/my-game-data/middleware"
 	"os"
 	"strings"
+
 )
 
 func getAllowOrigins() []string {
-    rawOrigins := os.Getenv("ALLOW_ORIGINS")
-    
-    if rawOrigins == "" {
-        return []string{"http://localhost:3000"}
-    }
+	rawOrigins := os.Getenv("ALLOW_ORIGINS")
 
-    origins := strings.Split(rawOrigins, ",")
+	if rawOrigins == "" {
+		return []string{"http://localhost:3000"}
+	}
 
-    for i := range origins {
-        origins[i] = strings.TrimSpace(origins[i])
-    }
+	origins := strings.Split(rawOrigins, ",")
 
-    return origins
+	for i := range origins {
+		origins[i] = strings.TrimSpace(origins[i])
+	}
+
+	return origins
 }
-
 
 const defaultPort = "8080"
 
@@ -41,14 +41,6 @@ func main() {
 	r := gin.New()
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
-
-	r.Use(cors.New(cors.Config{
-		AllowOrigins: getAllowOrigins(),
-		AllowMethods:     []string{"GET", "POST", "OPTIONS"},
-		AllowHeaders:     []string{"Content-Type", "Authorization", "Accept"},
-		AllowCredentials: true,
-		MaxAge: 12 * time.Hour,
-	}))
 
 	mongoClient := db.ConnectDB()
 	database := mongoClient.Database(os.Getenv("DB_NAME"))
@@ -67,14 +59,10 @@ func main() {
 	srv.AddTransport(transport.MultipartForm{})
 	srv.Use(extension.Introspection{})
 
-	r.OPTIONS("/query", func(c *gin.Context) {
-		srv.ServeHTTP(c.Writer, c.Request)
-	})
-	r.POST("/query", func(c *gin.Context) {
-		srv.ServeHTTP(c.Writer, c.Request)
-	})
-	r.GET("/query", func(c *gin.Context) {
-		srv.ServeHTTP(c.Writer, c.Request)
+	r.POST("/query", middleware.AuthMiddleware(), func(c *gin.Context) {
+		uid, _ := c.Get("user_id")
+		ctx := context.WithValue(c.Request.Context(), "user_id", uid)
+		srv.ServeHTTP(c.Writer, c.Request.WithContext(ctx))
 	})
 
 	r.GET("/", func(c *gin.Context) {
