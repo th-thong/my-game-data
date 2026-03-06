@@ -17,7 +17,6 @@ import (
 
 // CreateCharacter is the resolver for the createCharacter field.
 func (r *mutationResolver) CreateCharacter(ctx context.Context, input model.NewCharacterData) (*model.Character, error) {
-	
 	userId := ctx.Value("user_id")
 	if userId == nil {
 		return nil, fmt.Errorf("Access denied")
@@ -29,6 +28,26 @@ func (r *mutationResolver) CreateCharacter(ctx context.Context, input model.NewC
 	}
 
 	res, err := r.DB.Collection("character").InsertOne(ctx, newChar)
+	if err != nil {
+		return nil, fmt.Errorf("Cannot create char: %v", err)
+	}
+	newChar.ID = res.InsertedID.(primitive.ObjectID).Hex()
+	return &newChar, nil
+}
+
+// CreateWeapon is the resolver for the createWeapon field.
+func (r *mutationResolver) CreateWeapon(ctx context.Context, input model.NewWeaponData) (*model.Weapon, error) {
+	userId := ctx.Value("user_id")
+	if userId == nil {
+		return nil, fmt.Errorf("Access denied")
+	}
+
+	newChar := model.Weapon{
+		Name:      input.Name,
+		RoundIcon: input.RoundIcon,
+	}
+
+	res, err := r.DB.Collection("weapon").InsertOne(ctx, newChar)
 	if err != nil {
 		return nil, fmt.Errorf("Cannot create char: %v", err)
 	}
@@ -54,7 +73,6 @@ func (r *queryResolver) GetCharacter(ctx context.Context, id string) (*model.Cha
 
 // ListCharacter is the resolver for the listCharacter field.
 func (r *queryResolver) ListCharacter(ctx context.Context) ([]*model.Character, error) {
-
 	var characters []*model.Character
 	cursor, err := r.DB.Collection("character").Find(ctx, bson.M{})
 
@@ -68,6 +86,39 @@ func (r *queryResolver) ListCharacter(ctx context.Context) ([]*model.Character, 
 	}
 
 	return characters, nil
+}
+
+// GetWeapon is the resolver for the getWeapon field.
+func (r *queryResolver) GetWeapon(ctx context.Context, id string) (*model.Weapon, error) {
+	objId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, fmt.Errorf("ID invalid, %w", err)
+	}
+	var weapon model.Weapon
+	filter := bson.M{"_id": objId}
+	err = r.DB.Collection("weapon").FindOne(ctx, filter).Decode(&weapon)
+
+	if err != nil {
+		return nil, err
+	}
+	return &weapon, nil
+}
+
+// ListWeapon is the resolver for the listWeapon field.
+func (r *queryResolver) ListWeapon(ctx context.Context) ([]*model.Weapon, error) {
+	var weapon []*model.Weapon
+	cursor, err := r.DB.Collection("weapon").Find(ctx, bson.M{})
+
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(ctx)
+
+	if err := cursor.All(ctx, &weapon); err != nil {
+		return nil, err
+	}
+
+	return weapon, nil
 }
 
 // Mutation returns generated.MutationResolver implementation.
@@ -78,28 +129,3 @@ func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
 
 type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
-
-// !!! WARNING !!!
-// The code below was going to be deleted when updating resolvers. It has been copied here so you have
-// one last chance to move it out of harms way if you want. There are two reasons this happens:
-//  - When renaming or deleting a resolver the old code will be put in here. You can safely delete
-//    it when you're done.
-//  - You have helper methods in this file. Move them out to keep these resolver files clean.
-/*
-	func (r *queryResolver) ListCharcter(ctx context.Context) ([]*model.Character, error) {
-
-	var characters []*model.Character
-	cursor, err := r.DB.Collection("character").Find(ctx, bson.M{})
-
-	if err != nil {
-		return nil, err
-	}
-	defer cursor.Close(ctx)
-
-	if err := cursor.All(ctx, &characters); err != nil {
-		return nil, err
-	}
-
-	return characters, nil
-}
-*/

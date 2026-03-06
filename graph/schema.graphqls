@@ -9,11 +9,26 @@ type Character {
   roundIcon:String!
 }
 
+input NewWeaponData {
+  name:String!
+  roundIcon:String!
+}
+
+type Weapon {
+  id: ID!
+  name:String!
+  roundIcon:String!
+}
+
+
 type Query {
     getCharacter(id: String!): Character
     listCharacter:[Character!]!
+    getWeapon(id: String!): Weapon
+    listWeapon:[Weapon!]!
 }
 
 type Mutation {
   createCharacter(input: NewCharacterData!): Character!
+  createWeapon(input: NewWeaponData!): Weapon!
 }
