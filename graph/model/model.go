@@ -1,24 +1,38 @@
 package model
 
-type Character struct {
-    ID      string `json:"id" bson:"_id,omitempty"`
-    Name    string `json:"name" bson:"name"`
-    RoundIcon string `json:"round_icon" bson:"round_icon"`
+import "go.mongodb.org/mongo-driver/v2/bson"
+
+type Element struct {
+	DBId bson.ObjectID `json:"DBId" bson:"_id,omitempty"`
+	ID    int           `json:"Id" bson:"Id"`
+	Icon  string        `json:"Icon" bson:"Icon"`
+	Name  string        `json:"Name" bson:"Name"`
 }
 
-type NewCharacterData struct {
-    Name    string `json:"name" bson:"name"`
-    RoundIcon string `json:"round_icon" bson:"round_icon"`
+type WeaponType struct {
+	DBId bson.ObjectID `json:"DBId" bson:"_id,omitempty"`
+	ID    int           `json:"Id" bson:"Id"`
+	Name  string        `json:"Name" bson:"Name"`
+	Icon  string        `json:"Icon" bson:"Icon"`
+}
+
+type Character struct {
+	DBId        bson.ObjectID `json:"DBId" bson:"_id,omitempty"`
+	ID           int           `json:"Id" bson:"Id"`
+	Name         string        `json:"Name" bson:"Name"`
+	QualityID    int           `json:"QualityId" bson:"QualityId"`
+	Element      Element       `json:"Element" bson:"Element"`
+	RoleHeadIcon string        `json:"RoleHeadIcon" bson:"RoleHeadIcon"`
+	WeaponType   WeaponType    `json:"WeaponType" bson:"WeaponType"`
 }
 
 type Weapon struct {
-    ID      string `json:"id" bson:"_id,omitempty"`
-    Name    string `json:"name" bson:"name"`
-    RoundIcon string `json:"round_icon" bson:"round_icon"`
+	DBId     bson.ObjectID `json:"DBId" bson:"_id,omitempty"`
+	ID        int           `json:"Id" bson:"Id"`
+	Name      string        `json:"Name" bson:"Name"`
+	Icon      string        `json:"Icon" bson:"Icon"`
+	Type      int           `json:"Type" bson:"Type"`
+	QualityID int           `json:"QualityId" bson:"QualityId"`
+	TypeName  string        `json:"TypeName" bson:"TypeName"`
+	TypeIcon  string        `json:"TypeIcon" bson:"TypeIcon"`
 }
-
-type NewWeaponData struct {
-    Name    string `json:"name" bson:"name"`
-    RoundIcon string `json:"round_icon" bson:"round_icon"`
-}
-

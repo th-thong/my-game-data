@@ -13,25 +13,8 @@ import (
 	"gitlab.com/my-game873206/my-game-data/internal/db"
 	"gitlab.com/my-game873206/my-game-data/middleware"
 	"os"
-	"strings"
-
 )
 
-func getAllowOrigins() []string {
-	rawOrigins := os.Getenv("ALLOW_ORIGINS")
-
-	if rawOrigins == "" {
-		return []string{"http://localhost:3000"}
-	}
-
-	origins := strings.Split(rawOrigins, ",")
-
-	for i := range origins {
-		origins[i] = strings.TrimSpace(origins[i])
-	}
-
-	return origins
-}
 
 const defaultPort = "8080"
 

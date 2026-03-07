@@ -1,34 +1,82 @@
-input NewCharacterData {
-  name:String!
-  roundIcon:String!
+
+type Element {
+  DBId: ID!
+  ID: Int!
+  Icon: String!
+  Name: String!
+}
+
+type WeaponType {
+  DBId: ID!
+  ID: Int!
+  Name: String!
+  Icon: String!
 }
 
 type Character {
-  id: ID!
-  name:String!
-  roundIcon:String!
-}
-
-input NewWeaponData {
-  name:String!
-  roundIcon:String!
+  DBId: ID!
+  ID: Int!
+  Name: String!
+  QualityID: Int!
+  Element: Element!
+  RoleHeadIcon: String!
+  WeaponType: WeaponType!
 }
 
 type Weapon {
-  id: ID!
-  name:String!
-  roundIcon:String!
+  DBId: ID!
+  ID: Int!
+  Name: String!
+  Icon: String!
+  Type: Int!
+  QualityID: Int!
+  TypeName: String!
+  TypeIcon: String!
+}
+
+input ElementInput {
+  ID: Int!
+  Icon: String!
+  Name: String!
+}
+
+input WeaponTypeInput {
+  ID: Int!
+  Name: String!
+  Icon: String!
+}
+
+input CharacterInput {
+  ID: Int!
+  Name: String!
+  QualityID: Int!
+  Element: ElementInput!
+  RoleHeadIcon: String!
+  WeaponType: WeaponTypeInput!
+}
+
+input WeaponInput {
+  ID: Int!
+  Name: String!
+  Icon: String!
+  Type: Int!
+  QualityID: Int!
+  TypeName: String!
+  TypeIcon: String!
 }
 
 
 type Query {
-    getCharacter(id: String!): Character
-    listCharacter:[Character!]!
-    getWeapon(id: String!): Weapon
-    listWeapon:[Weapon!]!
+  characters: [Character!]!
+  weapons: [Weapon!]!
+  character(id: Int!): Character
+  weapon(id: Int!): Weapon
 }
 
+
 type Mutation {
-  createCharacter(input: NewCharacterData!): Character!
-  createWeapon(input: NewWeaponData!): Weapon!
+  importCharacter(input: CharacterInput!): Character!
+  importCharacters(inputs: [CharacterInput!]!): [Character!]!
+  importWeapon(input: WeaponInput!): Weapon!
+  importWeapons(inputs: [WeaponInput!]!): [Weapon!]!
 }
