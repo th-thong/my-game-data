@@ -1,18 +1,66 @@
-input NewCharacterData {
-  name:String!
-  roundIcon:String!
+scalar ObjectID
+
+type Element {
+  Id: Int!
+  Icon: String!
+  Name: String!
 }
 
-type Query {
-    _empty: String
-}
-
-type Mutation {
-  CreateCharacter(input: NewCharacterData!): Character!
+type WeaponType {
+  DBId: ObjectID!
+  Id: Int!
+  Name: String!
+  Icon: String!
 }
 
 type Character {
-  id: ID!
-  name:String!
-  roundIcon:String!
+  DBId: ObjectID!
+  Id: Int!
+  Name: String!
+  QualityID: Int!
+  Element: Element!
+  RoleHeadIcon: String!
+  WeaponType: WeaponType!
+  BannerImg: String!
+}
+
+type Weapon {
+  DBId: ObjectID!
+  Id: Int!
+  Name: String!
+  Icon: String!
+  Type: Int!
+  QualityID: Int!
+  TypeName: String!
+  TypeIcon: String!
+}
+
+type EchoSet {
+  Id: Int!
+  Icon: String!
+  Name: String!
+}
+
+type Echo {
+  DBId: ObjectID!
+  Id: Int!
+  Name: String!
+  Rarity: Int!
+  Icon: String!
+  IconMiddle: String!
+  IconSmall: String!
+  PhantomType: Int!
+  Element: Element!
+  Type: String!
+  Attributes: String!
+  EchoGroups: [EchoSet]!
+}
+
+type Query {
+  characters: [Character!]!
+  weapons: [Weapon!]!
+  character(id: Int!): Character
+  weapon(id: Int!): Weapon
+  echo(id: Int!): Echo
+  echoes: [Echo]!
 }

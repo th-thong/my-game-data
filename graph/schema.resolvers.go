@@ -7,38 +7,105 @@ package graph
 
 import (
 	"context"
-	"fmt"
+	"os"
 
 	"gitlab.com/my-game873206/my-game-data/graph/generated"
 	"gitlab.com/my-game873206/my-game-data/graph/model"
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
-// CreateCharacter is the resolver for the createCharacter field.
-func (r *mutationResolver) CreateCharacter(ctx context.Context, input model.NewCharacterData) (*model.Character, error) {
-	newChar := model.Character{
-		Name:      input.Name,
-		RoundIcon: input.RoundIcon,
-	}
-
-	res, err := r.DB.Collection("character").InsertOne(ctx, newChar)
+// Characters is the resolver for the characters field.
+func (r *queryResolver) Characters(ctx context.Context) ([]*model.Character, error) {
+	var chars []*model.Character
+	charCollection := os.Getenv("CHAR_COLL")
+	cursor, err := r.DB.Collection(charCollection).Find(ctx, bson.M{})
 	if err != nil {
-		return nil, fmt.Errorf("Cannot create char: %v", err)
+		return nil, err
 	}
-	newChar.ID = res.InsertedID.(primitive.ObjectID).Hex()
-	return &newChar, nil
+	defer cursor.Close(ctx)
+
+	if err = cursor.All(ctx, &chars); err != nil {
+		return nil, err
+	}
+	return chars, nil
 }
 
-// Empty is the resolver for the _empty field.
-func (r *queryResolver) Empty(ctx context.Context) (*string, error) {
-	panic(fmt.Errorf("not implemented: Empty - _empty"))
+// Weapons is the resolver for the weapons field.
+func (r *queryResolver) Weapons(ctx context.Context) ([]*model.Weapon, error) {
+	var weapons []*model.Weapon
+	weapCollection := os.Getenv("WEAP_COLL")
+	cursor, err := r.DB.Collection(weapCollection).Find(ctx, bson.M{})
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(ctx)
+
+	if err = cursor.All(ctx, &weapons); err != nil {
+		return nil, err
+	}
+	return weapons, nil
 }
 
-// Mutation returns generated.MutationResolver implementation.
-func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
+// Character is the resolver for the character field.
+func (r *queryResolver) Character(ctx context.Context, id int32) (*model.Character, error) {
+	var char model.Character
+	charCollection := os.Getenv("CHAR_COLL")
+	err := r.DB.Collection(charCollection).FindOne(ctx, bson.M{"Id": id}).Decode(&char)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, nil
+		}
+		return nil, err
+	}
+	return &char, nil
+}
+
+// Weapon is the resolver for the weapon field.
+func (r *queryResolver) Weapon(ctx context.Context, id int32) (*model.Weapon, error) {
+	var weapon model.Weapon
+	weapCollection := os.Getenv("WEAP_COLL")
+	err := r.DB.Collection(weapCollection).FindOne(ctx, bson.M{"Id": id}).Decode(&weapon)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, nil
+		}
+		return nil, err
+	}
+	return &weapon, nil
+}
+
+// Echo is the resolver for the echo field.
+func (r *queryResolver) Echo(ctx context.Context, id int32) (*model.Echo, error) {
+	var echo model.Echo
+	echoCollection := os.Getenv("ECHO_COLL")
+	err := r.DB.Collection(echoCollection).FindOne(ctx, bson.M{"Id": id}).Decode(&echo)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, nil
+		}
+		return nil, err
+	}
+	return &echo, nil
+}
+
+// Echoes is the resolver for the echoes field.
+func (r *queryResolver) Echoes(ctx context.Context) ([]*model.Echo, error) {
+	var echoes []*model.Echo
+	echoCollection := os.Getenv("ECHO_COLL")
+	cursor, err := r.DB.Collection(echoCollection).Find(ctx, bson.M{})
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(ctx)
+
+	if err = cursor.All(ctx, &echoes); err != nil {
+		return nil, err
+	}
+	return echoes, nil
+}
 
 // Query returns generated.QueryResolver implementation.
 func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
 
-type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }

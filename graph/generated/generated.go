@@ -15,6 +15,7 @@ import (
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
 	"gitlab.com/my-game873206/my-game-data/graph/model"
+	"go.mongodb.org/mongo-driver/v2/bson"
 )
 
 // region    ************************** generated!.gotpl **************************
@@ -27,7 +28,6 @@ func NewExecutableSchema(cfg Config) graphql.ExecutableSchema {
 type Config = graphql.Config[ResolverRoot, DirectiveRoot, ComplexityRoot]
 
 type ResolverRoot interface {
-	Mutation() MutationResolver
 	Query() QueryResolver
 }
 
@@ -36,25 +36,78 @@ type DirectiveRoot struct {
 
 type ComplexityRoot struct {
 	Character struct {
-		ID        func(childComplexity int) int
-		Name      func(childComplexity int) int
-		RoundIcon func(childComplexity int) int
+		BannerImg    func(childComplexity int) int
+		DBId         func(childComplexity int) int
+		Element      func(childComplexity int) int
+		Id           func(childComplexity int) int
+		Name         func(childComplexity int) int
+		QualityID    func(childComplexity int) int
+		RoleHeadIcon func(childComplexity int) int
+		WeaponType   func(childComplexity int) int
 	}
 
-	Mutation struct {
-		CreateCharacter func(childComplexity int, input model.NewCharacterData) int
+	Echo struct {
+		Attributes  func(childComplexity int) int
+		DBId        func(childComplexity int) int
+		EchoGroups  func(childComplexity int) int
+		Element     func(childComplexity int) int
+		Icon        func(childComplexity int) int
+		IconMiddle  func(childComplexity int) int
+		IconSmall   func(childComplexity int) int
+		Id          func(childComplexity int) int
+		Name        func(childComplexity int) int
+		PhantomType func(childComplexity int) int
+		Rarity      func(childComplexity int) int
+		Type        func(childComplexity int) int
+	}
+
+	EchoSet struct {
+		Icon func(childComplexity int) int
+		Id   func(childComplexity int) int
+		Name func(childComplexity int) int
+	}
+
+	Element struct {
+		Icon func(childComplexity int) int
+		Id   func(childComplexity int) int
+		Name func(childComplexity int) int
 	}
 
 	Query struct {
-		Empty func(childComplexity int) int
+		Character  func(childComplexity int, id int32) int
+		Characters func(childComplexity int) int
+		Echo       func(childComplexity int, id int32) int
+		Echoes     func(childComplexity int) int
+		Weapon     func(childComplexity int, id int32) int
+		Weapons    func(childComplexity int) int
+	}
+
+	Weapon struct {
+		DBId      func(childComplexity int) int
+		Icon      func(childComplexity int) int
+		Id        func(childComplexity int) int
+		Name      func(childComplexity int) int
+		QualityID func(childComplexity int) int
+		Type      func(childComplexity int) int
+		TypeIcon  func(childComplexity int) int
+		TypeName  func(childComplexity int) int
+	}
+
+	WeaponType struct {
+		DBId func(childComplexity int) int
+		Icon func(childComplexity int) int
+		Id   func(childComplexity int) int
+		Name func(childComplexity int) int
 	}
 }
 
-type MutationResolver interface {
-	CreateCharacter(ctx context.Context, input model.NewCharacterData) (*model.Character, error)
-}
 type QueryResolver interface {
-	Empty(ctx context.Context) (*string, error)
+	Characters(ctx context.Context) ([]*model.Character, error)
+	Weapons(ctx context.Context) ([]*model.Weapon, error)
+	Character(ctx context.Context, id int32) (*model.Character, error)
+	Weapon(ctx context.Context, id int32) (*model.Weapon, error)
+	Echo(ctx context.Context, id int32) (*model.Echo, error)
+	Echoes(ctx context.Context) ([]*model.Echo, error)
 }
 
 type executableSchema graphql.ExecutableSchemaState[ResolverRoot, DirectiveRoot, ComplexityRoot]
@@ -71,43 +124,292 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 	_ = ec
 	switch typeName + "." + field {
 
-	case "Character.id":
-		if e.ComplexityRoot.Character.ID == nil {
+	case "Character.BannerImg":
+		if e.ComplexityRoot.Character.BannerImg == nil {
 			break
 		}
 
-		return e.ComplexityRoot.Character.ID(childComplexity), true
-	case "Character.name":
+		return e.ComplexityRoot.Character.BannerImg(childComplexity), true
+	case "Character.DBId":
+		if e.ComplexityRoot.Character.DBId == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Character.DBId(childComplexity), true
+	case "Character.Element":
+		if e.ComplexityRoot.Character.Element == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Character.Element(childComplexity), true
+	case "Character.Id":
+		if e.ComplexityRoot.Character.Id == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Character.Id(childComplexity), true
+	case "Character.Name":
 		if e.ComplexityRoot.Character.Name == nil {
 			break
 		}
 
 		return e.ComplexityRoot.Character.Name(childComplexity), true
-	case "Character.roundIcon":
-		if e.ComplexityRoot.Character.RoundIcon == nil {
+	case "Character.QualityID":
+		if e.ComplexityRoot.Character.QualityID == nil {
 			break
 		}
 
-		return e.ComplexityRoot.Character.RoundIcon(childComplexity), true
-
-	case "Mutation.CreateCharacter":
-		if e.ComplexityRoot.Mutation.CreateCharacter == nil {
+		return e.ComplexityRoot.Character.QualityID(childComplexity), true
+	case "Character.RoleHeadIcon":
+		if e.ComplexityRoot.Character.RoleHeadIcon == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_CreateCharacter_args(ctx, rawArgs)
+		return e.ComplexityRoot.Character.RoleHeadIcon(childComplexity), true
+	case "Character.WeaponType":
+		if e.ComplexityRoot.Character.WeaponType == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Character.WeaponType(childComplexity), true
+
+	case "Echo.Attributes":
+		if e.ComplexityRoot.Echo.Attributes == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Echo.Attributes(childComplexity), true
+	case "Echo.DBId":
+		if e.ComplexityRoot.Echo.DBId == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Echo.DBId(childComplexity), true
+	case "Echo.EchoGroups":
+		if e.ComplexityRoot.Echo.EchoGroups == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Echo.EchoGroups(childComplexity), true
+	case "Echo.Element":
+		if e.ComplexityRoot.Echo.Element == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Echo.Element(childComplexity), true
+	case "Echo.Icon":
+		if e.ComplexityRoot.Echo.Icon == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Echo.Icon(childComplexity), true
+	case "Echo.IconMiddle":
+		if e.ComplexityRoot.Echo.IconMiddle == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Echo.IconMiddle(childComplexity), true
+	case "Echo.IconSmall":
+		if e.ComplexityRoot.Echo.IconSmall == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Echo.IconSmall(childComplexity), true
+	case "Echo.Id":
+		if e.ComplexityRoot.Echo.Id == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Echo.Id(childComplexity), true
+	case "Echo.Name":
+		if e.ComplexityRoot.Echo.Name == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Echo.Name(childComplexity), true
+	case "Echo.PhantomType":
+		if e.ComplexityRoot.Echo.PhantomType == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Echo.PhantomType(childComplexity), true
+	case "Echo.Rarity":
+		if e.ComplexityRoot.Echo.Rarity == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Echo.Rarity(childComplexity), true
+	case "Echo.Type":
+		if e.ComplexityRoot.Echo.Type == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Echo.Type(childComplexity), true
+
+	case "EchoSet.Icon":
+		if e.ComplexityRoot.EchoSet.Icon == nil {
+			break
+		}
+
+		return e.ComplexityRoot.EchoSet.Icon(childComplexity), true
+	case "EchoSet.Id":
+		if e.ComplexityRoot.EchoSet.Id == nil {
+			break
+		}
+
+		return e.ComplexityRoot.EchoSet.Id(childComplexity), true
+	case "EchoSet.Name":
+		if e.ComplexityRoot.EchoSet.Name == nil {
+			break
+		}
+
+		return e.ComplexityRoot.EchoSet.Name(childComplexity), true
+
+	case "Element.Icon":
+		if e.ComplexityRoot.Element.Icon == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Element.Icon(childComplexity), true
+	case "Element.Id":
+		if e.ComplexityRoot.Element.Id == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Element.Id(childComplexity), true
+	case "Element.Name":
+		if e.ComplexityRoot.Element.Name == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Element.Name(childComplexity), true
+
+	case "Query.character":
+		if e.ComplexityRoot.Query.Character == nil {
+			break
+		}
+
+		args, err := ec.field_Query_character_args(ctx, rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.ComplexityRoot.Mutation.CreateCharacter(childComplexity, args["input"].(model.NewCharacterData)), true
-
-	case "Query._empty":
-		if e.ComplexityRoot.Query.Empty == nil {
+		return e.ComplexityRoot.Query.Character(childComplexity, args["id"].(int32)), true
+	case "Query.characters":
+		if e.ComplexityRoot.Query.Characters == nil {
 			break
 		}
 
-		return e.ComplexityRoot.Query.Empty(childComplexity), true
+		return e.ComplexityRoot.Query.Characters(childComplexity), true
+	case "Query.echo":
+		if e.ComplexityRoot.Query.Echo == nil {
+			break
+		}
+
+		args, err := ec.field_Query_echo_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.ComplexityRoot.Query.Echo(childComplexity, args["id"].(int32)), true
+	case "Query.echoes":
+		if e.ComplexityRoot.Query.Echoes == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Query.Echoes(childComplexity), true
+
+	case "Query.weapon":
+		if e.ComplexityRoot.Query.Weapon == nil {
+			break
+		}
+
+		args, err := ec.field_Query_weapon_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.ComplexityRoot.Query.Weapon(childComplexity, args["id"].(int32)), true
+	case "Query.weapons":
+		if e.ComplexityRoot.Query.Weapons == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Query.Weapons(childComplexity), true
+
+	case "Weapon.DBId":
+		if e.ComplexityRoot.Weapon.DBId == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Weapon.DBId(childComplexity), true
+	case "Weapon.Icon":
+		if e.ComplexityRoot.Weapon.Icon == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Weapon.Icon(childComplexity), true
+	case "Weapon.Id":
+		if e.ComplexityRoot.Weapon.Id == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Weapon.Id(childComplexity), true
+	case "Weapon.Name":
+		if e.ComplexityRoot.Weapon.Name == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Weapon.Name(childComplexity), true
+	case "Weapon.QualityID":
+		if e.ComplexityRoot.Weapon.QualityID == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Weapon.QualityID(childComplexity), true
+	case "Weapon.Type":
+		if e.ComplexityRoot.Weapon.Type == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Weapon.Type(childComplexity), true
+	case "Weapon.TypeIcon":
+		if e.ComplexityRoot.Weapon.TypeIcon == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Weapon.TypeIcon(childComplexity), true
+	case "Weapon.TypeName":
+		if e.ComplexityRoot.Weapon.TypeName == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Weapon.TypeName(childComplexity), true
+
+	case "WeaponType.DBId":
+		if e.ComplexityRoot.WeaponType.DBId == nil {
+			break
+		}
+
+		return e.ComplexityRoot.WeaponType.DBId(childComplexity), true
+	case "WeaponType.Icon":
+		if e.ComplexityRoot.WeaponType.Icon == nil {
+			break
+		}
+
+		return e.ComplexityRoot.WeaponType.Icon(childComplexity), true
+	case "WeaponType.Id":
+		if e.ComplexityRoot.WeaponType.Id == nil {
+			break
+		}
+
+		return e.ComplexityRoot.WeaponType.Id(childComplexity), true
+	case "WeaponType.Name":
+		if e.ComplexityRoot.WeaponType.Name == nil {
+			break
+		}
+
+		return e.ComplexityRoot.WeaponType.Name(childComplexity), true
 
 	}
 	return 0, false
@@ -116,9 +418,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	opCtx := graphql.GetOperationContext(ctx)
 	ec := newExecutionContext(opCtx, e, make(chan graphql.DeferredResult))
-	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
-		ec.unmarshalInputNewCharacterData,
-	)
+	inputUnmarshalMap := graphql.BuildUnmarshalerMap()
 	first := true
 
 	switch opCtx.Operation.Operation {
@@ -152,21 +452,6 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 
 			return &response
 		}
-	case ast.Mutation:
-		return func(ctx context.Context) *graphql.Response {
-			if !first {
-				return nil
-			}
-			first = false
-			ctx = graphql.WithUnmarshalerMap(ctx, inputUnmarshalMap)
-			data := ec._Mutation(ctx, opCtx.Operation.SelectionSet)
-			var buf bytes.Buffer
-			data.MarshalGQL(&buf)
-
-			return &graphql.Response{
-				Data: buf.Bytes(),
-			}
-		}
 
 	default:
 		return graphql.OneShot(graphql.ErrorResponse(ctx, "unsupported GraphQL operation"))
@@ -193,23 +478,73 @@ func newExecutionContext(
 }
 
 var sources = []*ast.Source{
-	{Name: "../schema.graphqls", Input: `input NewCharacterData {
-  name:String!
-  roundIcon:String!
+	{Name: "../schema.graphqls", Input: `scalar ObjectID
+
+type Element {
+  Id: Int!
+  Icon: String!
+  Name: String!
 }
 
-type Query {
-    _empty: String
-}
-
-type Mutation {
-  CreateCharacter(input: NewCharacterData!): Character!
+type WeaponType {
+  DBId: ObjectID!
+  Id: Int!
+  Name: String!
+  Icon: String!
 }
 
 type Character {
-  id: ID!
-  name:String!
-  roundIcon:String!
+  DBId: ObjectID!
+  Id: Int!
+  Name: String!
+  QualityID: Int!
+  Element: Element!
+  RoleHeadIcon: String!
+  WeaponType: WeaponType!
+  BannerImg: String!
+}
+
+type Weapon {
+  DBId: ObjectID!
+  Id: Int!
+  Name: String!
+  Icon: String!
+  Type: Int!
+  QualityID: Int!
+  TypeName: String!
+  TypeIcon: String!
+}
+
+type EchoSet {
+  Id: Int!
+  Icon: String!
+  Name: String!
+}
+
+
+
+type Echo  {
+  DBId: ObjectID!
+	Id: Int!
+	Name: String!
+	Rarity: Int!
+	Icon:  String!
+	IconMiddle:  String!
+	IconSmall:  String!
+	PhantomType: Int!
+	Element:  Element!
+	Type: String!
+	Attributes: String!
+	EchoGroups: [EchoSet]!
+}
+
+type Query {
+  characters: [Character!]!
+  weapons: [Weapon!]!
+  character(id: Int!): Character
+  weapon(id: Int!): Weapon
+  echo(id: Int!): Echo
+  echoes: [Echo]!
 }`, BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)
@@ -217,17 +552,6 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 // endregion ************************** generated!.gotpl **************************
 
 // region    ***************************** args.gotpl *****************************
-
-func (ec *executionContext) field_Mutation_CreateCharacter_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
-	var err error
-	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "input", ec.unmarshalNNewCharacterData2gitlabᚗcomᚋmyᚑgame873206ᚋmyᚑgameᚑdataᚋgraphᚋmodelᚐNewCharacterData)
-	if err != nil {
-		return nil, err
-	}
-	args["input"] = arg0
-	return args, nil
-}
 
 func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
@@ -237,6 +561,39 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 		return nil, err
 	}
 	args["name"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_character_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNInt2int32)
+	if err != nil {
+		return nil, err
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_echo_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNInt2int32)
+	if err != nil {
+		return nil, err
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_weapon_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "id", ec.unmarshalNInt2int32)
+	if err != nil {
+		return nil, err
+	}
+	args["id"] = arg0
 	return args, nil
 }
 
@@ -292,41 +649,70 @@ func (ec *executionContext) field___Type_fields_args(ctx context.Context, rawArg
 
 // region    **************************** field.gotpl *****************************
 
-func (ec *executionContext) _Character_id(ctx context.Context, field graphql.CollectedField, obj *model.Character) (ret graphql.Marshaler) {
+func (ec *executionContext) _Character_DBId(ctx context.Context, field graphql.CollectedField, obj *model.Character) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
 		field,
-		ec.fieldContext_Character_id,
+		ec.fieldContext_Character_DBId,
 		func(ctx context.Context) (any, error) {
-			return obj.ID, nil
+			return obj.DBId, nil
 		},
 		nil,
-		ec.marshalNID2string,
+		ec.marshalNObjectID2goᚗmongodbᚗorgᚋmongoᚑdriverᚋv2ᚋbsonᚐObjectID,
 		true,
 		true,
 	)
 }
 
-func (ec *executionContext) fieldContext_Character_id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Character_DBId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Character",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
+			return nil, errors.New("field of type ObjectID does not have child fields")
 		},
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Character_name(ctx context.Context, field graphql.CollectedField, obj *model.Character) (ret graphql.Marshaler) {
+func (ec *executionContext) _Character_Id(ctx context.Context, field graphql.CollectedField, obj *model.Character) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
 		field,
-		ec.fieldContext_Character_name,
+		ec.fieldContext_Character_Id,
+		func(ctx context.Context) (any, error) {
+			return obj.Id, nil
+		},
+		nil,
+		ec.marshalNInt2int,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Character_Id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Character",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Character_Name(ctx context.Context, field graphql.CollectedField, obj *model.Character) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Character_Name,
 		func(ctx context.Context) (any, error) {
 			return obj.Name, nil
 		},
@@ -337,7 +723,7 @@ func (ec *executionContext) _Character_name(ctx context.Context, field graphql.C
 	)
 }
 
-func (ec *executionContext) fieldContext_Character_name(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Character_Name(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Character",
 		Field:      field,
@@ -350,14 +736,80 @@ func (ec *executionContext) fieldContext_Character_name(_ context.Context, field
 	return fc, nil
 }
 
-func (ec *executionContext) _Character_roundIcon(ctx context.Context, field graphql.CollectedField, obj *model.Character) (ret graphql.Marshaler) {
+func (ec *executionContext) _Character_QualityID(ctx context.Context, field graphql.CollectedField, obj *model.Character) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
 		field,
-		ec.fieldContext_Character_roundIcon,
+		ec.fieldContext_Character_QualityID,
 		func(ctx context.Context) (any, error) {
-			return obj.RoundIcon, nil
+			return obj.QualityID, nil
+		},
+		nil,
+		ec.marshalNInt2int,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Character_QualityID(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Character",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Character_Element(ctx context.Context, field graphql.CollectedField, obj *model.Character) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Character_Element,
+		func(ctx context.Context) (any, error) {
+			return obj.Element, nil
+		},
+		nil,
+		ec.marshalNElement2gitlabᚗcomᚋmyᚑgame873206ᚋmyᚑgameᚑdataᚋgraphᚋmodelᚐElement,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Character_Element(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Character",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "Id":
+				return ec.fieldContext_Element_Id(ctx, field)
+			case "Icon":
+				return ec.fieldContext_Element_Icon(ctx, field)
+			case "Name":
+				return ec.fieldContext_Element_Name(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Element", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Character_RoleHeadIcon(ctx context.Context, field graphql.CollectedField, obj *model.Character) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Character_RoleHeadIcon,
+		func(ctx context.Context) (any, error) {
+			return obj.RoleHeadIcon, nil
 		},
 		nil,
 		ec.marshalNString2string,
@@ -366,7 +818,7 @@ func (ec *executionContext) _Character_roundIcon(ctx context.Context, field grap
 	)
 }
 
-func (ec *executionContext) fieldContext_Character_roundIcon(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Character_RoleHeadIcon(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Character",
 		Field:      field,
@@ -379,37 +831,747 @@ func (ec *executionContext) fieldContext_Character_roundIcon(_ context.Context, 
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_CreateCharacter(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Character_WeaponType(ctx context.Context, field graphql.CollectedField, obj *model.Character) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
 		field,
-		ec.fieldContext_Mutation_CreateCharacter,
+		ec.fieldContext_Character_WeaponType,
 		func(ctx context.Context) (any, error) {
-			fc := graphql.GetFieldContext(ctx)
-			return ec.Resolvers.Mutation().CreateCharacter(ctx, fc.Args["input"].(model.NewCharacterData))
+			return obj.WeaponType, nil
 		},
 		nil,
-		ec.marshalNCharacter2ᚖgitlabᚗcomᚋmyᚑgame873206ᚋmyᚑgameᚑdataᚋgraphᚋmodelᚐCharacter,
+		ec.marshalNWeaponType2gitlabᚗcomᚋmyᚑgame873206ᚋmyᚑgameᚑdataᚋgraphᚋmodelᚐWeaponType,
 		true,
 		true,
 	)
 }
 
-func (ec *executionContext) fieldContext_Mutation_CreateCharacter(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Character_WeaponType(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "Mutation",
+		Object:     "Character",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "DBId":
+				return ec.fieldContext_WeaponType_DBId(ctx, field)
+			case "Id":
+				return ec.fieldContext_WeaponType_Id(ctx, field)
+			case "Name":
+				return ec.fieldContext_WeaponType_Name(ctx, field)
+			case "Icon":
+				return ec.fieldContext_WeaponType_Icon(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type WeaponType", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Character_BannerImg(ctx context.Context, field graphql.CollectedField, obj *model.Character) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Character_BannerImg,
+		func(ctx context.Context) (any, error) {
+			return obj.BannerImg, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Character_BannerImg(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Character",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Echo_DBId(ctx context.Context, field graphql.CollectedField, obj *model.Echo) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Echo_DBId,
+		func(ctx context.Context) (any, error) {
+			return obj.DBId, nil
+		},
+		nil,
+		ec.marshalNObjectID2goᚗmongodbᚗorgᚋmongoᚑdriverᚋv2ᚋbsonᚐObjectID,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Echo_DBId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Echo",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ObjectID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Echo_Id(ctx context.Context, field graphql.CollectedField, obj *model.Echo) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Echo_Id,
+		func(ctx context.Context) (any, error) {
+			return obj.Id, nil
+		},
+		nil,
+		ec.marshalNInt2int,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Echo_Id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Echo",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Echo_Name(ctx context.Context, field graphql.CollectedField, obj *model.Echo) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Echo_Name,
+		func(ctx context.Context) (any, error) {
+			return obj.Name, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Echo_Name(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Echo",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Echo_Rarity(ctx context.Context, field graphql.CollectedField, obj *model.Echo) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Echo_Rarity,
+		func(ctx context.Context) (any, error) {
+			return obj.Rarity, nil
+		},
+		nil,
+		ec.marshalNInt2int,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Echo_Rarity(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Echo",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Echo_Icon(ctx context.Context, field graphql.CollectedField, obj *model.Echo) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Echo_Icon,
+		func(ctx context.Context) (any, error) {
+			return obj.Icon, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Echo_Icon(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Echo",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Echo_IconMiddle(ctx context.Context, field graphql.CollectedField, obj *model.Echo) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Echo_IconMiddle,
+		func(ctx context.Context) (any, error) {
+			return obj.IconMiddle, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Echo_IconMiddle(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Echo",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Echo_IconSmall(ctx context.Context, field graphql.CollectedField, obj *model.Echo) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Echo_IconSmall,
+		func(ctx context.Context) (any, error) {
+			return obj.IconSmall, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Echo_IconSmall(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Echo",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Echo_PhantomType(ctx context.Context, field graphql.CollectedField, obj *model.Echo) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Echo_PhantomType,
+		func(ctx context.Context) (any, error) {
+			return obj.PhantomType, nil
+		},
+		nil,
+		ec.marshalNInt2int,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Echo_PhantomType(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Echo",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Echo_Element(ctx context.Context, field graphql.CollectedField, obj *model.Echo) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Echo_Element,
+		func(ctx context.Context) (any, error) {
+			return obj.Element, nil
+		},
+		nil,
+		ec.marshalNElement2gitlabᚗcomᚋmyᚑgame873206ᚋmyᚑgameᚑdataᚋgraphᚋmodelᚐElement,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Echo_Element(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Echo",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "Id":
+				return ec.fieldContext_Element_Id(ctx, field)
+			case "Icon":
+				return ec.fieldContext_Element_Icon(ctx, field)
+			case "Name":
+				return ec.fieldContext_Element_Name(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Element", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Echo_Type(ctx context.Context, field graphql.CollectedField, obj *model.Echo) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Echo_Type,
+		func(ctx context.Context) (any, error) {
+			return obj.Type, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Echo_Type(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Echo",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Echo_Attributes(ctx context.Context, field graphql.CollectedField, obj *model.Echo) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Echo_Attributes,
+		func(ctx context.Context) (any, error) {
+			return obj.Attributes, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Echo_Attributes(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Echo",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Echo_EchoGroups(ctx context.Context, field graphql.CollectedField, obj *model.Echo) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Echo_EchoGroups,
+		func(ctx context.Context) (any, error) {
+			return obj.EchoGroups, nil
+		},
+		nil,
+		ec.marshalNEchoSet2ᚕgitlabᚗcomᚋmyᚑgame873206ᚋmyᚑgameᚑdataᚋgraphᚋmodelᚐEchoSet,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Echo_EchoGroups(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Echo",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "Id":
+				return ec.fieldContext_EchoSet_Id(ctx, field)
+			case "Icon":
+				return ec.fieldContext_EchoSet_Icon(ctx, field)
+			case "Name":
+				return ec.fieldContext_EchoSet_Name(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type EchoSet", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _EchoSet_Id(ctx context.Context, field graphql.CollectedField, obj *model.EchoSet) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_EchoSet_Id,
+		func(ctx context.Context) (any, error) {
+			return obj.Id, nil
+		},
+		nil,
+		ec.marshalNInt2int,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_EchoSet_Id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "EchoSet",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _EchoSet_Icon(ctx context.Context, field graphql.CollectedField, obj *model.EchoSet) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_EchoSet_Icon,
+		func(ctx context.Context) (any, error) {
+			return obj.Icon, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_EchoSet_Icon(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "EchoSet",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _EchoSet_Name(ctx context.Context, field graphql.CollectedField, obj *model.EchoSet) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_EchoSet_Name,
+		func(ctx context.Context) (any, error) {
+			return obj.Name, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_EchoSet_Name(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "EchoSet",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Element_Id(ctx context.Context, field graphql.CollectedField, obj *model.Element) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Element_Id,
+		func(ctx context.Context) (any, error) {
+			return obj.Id, nil
+		},
+		nil,
+		ec.marshalNInt2int,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Element_Id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Element",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Element_Icon(ctx context.Context, field graphql.CollectedField, obj *model.Element) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Element_Icon,
+		func(ctx context.Context) (any, error) {
+			return obj.Icon, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Element_Icon(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Element",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Element_Name(ctx context.Context, field graphql.CollectedField, obj *model.Element) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Element_Name,
+		func(ctx context.Context) (any, error) {
+			return obj.Name, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Element_Name(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Element",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_characters(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Query_characters,
+		func(ctx context.Context) (any, error) {
+			return ec.Resolvers.Query().Characters(ctx)
+		},
+		nil,
+		ec.marshalNCharacter2ᚕᚖgitlabᚗcomᚋmyᚑgame873206ᚋmyᚑgameᚑdataᚋgraphᚋmodelᚐCharacterᚄ,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Query_characters(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
 		Field:      field,
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "id":
-				return ec.fieldContext_Character_id(ctx, field)
-			case "name":
-				return ec.fieldContext_Character_name(ctx, field)
-			case "roundIcon":
-				return ec.fieldContext_Character_roundIcon(ctx, field)
+			case "DBId":
+				return ec.fieldContext_Character_DBId(ctx, field)
+			case "Id":
+				return ec.fieldContext_Character_Id(ctx, field)
+			case "Name":
+				return ec.fieldContext_Character_Name(ctx, field)
+			case "QualityID":
+				return ec.fieldContext_Character_QualityID(ctx, field)
+			case "Element":
+				return ec.fieldContext_Character_Element(ctx, field)
+			case "RoleHeadIcon":
+				return ec.fieldContext_Character_RoleHeadIcon(ctx, field)
+			case "WeaponType":
+				return ec.fieldContext_Character_WeaponType(ctx, field)
+			case "BannerImg":
+				return ec.fieldContext_Character_BannerImg(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Character", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_weapons(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Query_weapons,
+		func(ctx context.Context) (any, error) {
+			return ec.Resolvers.Query().Weapons(ctx)
+		},
+		nil,
+		ec.marshalNWeapon2ᚕᚖgitlabᚗcomᚋmyᚑgame873206ᚋmyᚑgameᚑdataᚋgraphᚋmodelᚐWeaponᚄ,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Query_weapons(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "DBId":
+				return ec.fieldContext_Weapon_DBId(ctx, field)
+			case "Id":
+				return ec.fieldContext_Weapon_Id(ctx, field)
+			case "Name":
+				return ec.fieldContext_Weapon_Name(ctx, field)
+			case "Icon":
+				return ec.fieldContext_Weapon_Icon(ctx, field)
+			case "Type":
+				return ec.fieldContext_Weapon_Type(ctx, field)
+			case "QualityID":
+				return ec.fieldContext_Weapon_QualityID(ctx, field)
+			case "TypeName":
+				return ec.fieldContext_Weapon_TypeName(ctx, field)
+			case "TypeIcon":
+				return ec.fieldContext_Weapon_TypeIcon(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Weapon", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_character(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Query_character,
+		func(ctx context.Context) (any, error) {
+			fc := graphql.GetFieldContext(ctx)
+			return ec.Resolvers.Query().Character(ctx, fc.Args["id"].(int32))
+		},
+		nil,
+		ec.marshalOCharacter2ᚖgitlabᚗcomᚋmyᚑgame873206ᚋmyᚑgameᚑdataᚋgraphᚋmodelᚐCharacter,
+		true,
+		false,
+	)
+}
+
+func (ec *executionContext) fieldContext_Query_character(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "DBId":
+				return ec.fieldContext_Character_DBId(ctx, field)
+			case "Id":
+				return ec.fieldContext_Character_Id(ctx, field)
+			case "Name":
+				return ec.fieldContext_Character_Name(ctx, field)
+			case "QualityID":
+				return ec.fieldContext_Character_QualityID(ctx, field)
+			case "Element":
+				return ec.fieldContext_Character_Element(ctx, field)
+			case "RoleHeadIcon":
+				return ec.fieldContext_Character_RoleHeadIcon(ctx, field)
+			case "WeaponType":
+				return ec.fieldContext_Character_WeaponType(ctx, field)
+			case "BannerImg":
+				return ec.fieldContext_Character_BannerImg(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Character", field.Name)
 		},
@@ -421,37 +1583,189 @@ func (ec *executionContext) fieldContext_Mutation_CreateCharacter(ctx context.Co
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_CreateCharacter_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Query_character_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Query__empty(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Query_weapon(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
 		field,
-		ec.fieldContext_Query__empty,
+		ec.fieldContext_Query_weapon,
 		func(ctx context.Context) (any, error) {
-			return ec.Resolvers.Query().Empty(ctx)
+			fc := graphql.GetFieldContext(ctx)
+			return ec.Resolvers.Query().Weapon(ctx, fc.Args["id"].(int32))
 		},
 		nil,
-		ec.marshalOString2ᚖstring,
+		ec.marshalOWeapon2ᚖgitlabᚗcomᚋmyᚑgame873206ᚋmyᚑgameᚑdataᚋgraphᚋmodelᚐWeapon,
 		true,
 		false,
 	)
 }
 
-func (ec *executionContext) fieldContext_Query__empty(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_weapon(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			switch field.Name {
+			case "DBId":
+				return ec.fieldContext_Weapon_DBId(ctx, field)
+			case "Id":
+				return ec.fieldContext_Weapon_Id(ctx, field)
+			case "Name":
+				return ec.fieldContext_Weapon_Name(ctx, field)
+			case "Icon":
+				return ec.fieldContext_Weapon_Icon(ctx, field)
+			case "Type":
+				return ec.fieldContext_Weapon_Type(ctx, field)
+			case "QualityID":
+				return ec.fieldContext_Weapon_QualityID(ctx, field)
+			case "TypeName":
+				return ec.fieldContext_Weapon_TypeName(ctx, field)
+			case "TypeIcon":
+				return ec.fieldContext_Weapon_TypeIcon(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Weapon", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_weapon_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_echo(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Query_echo,
+		func(ctx context.Context) (any, error) {
+			fc := graphql.GetFieldContext(ctx)
+			return ec.Resolvers.Query().Echo(ctx, fc.Args["id"].(int32))
+		},
+		nil,
+		ec.marshalOEcho2ᚖgitlabᚗcomᚋmyᚑgame873206ᚋmyᚑgameᚑdataᚋgraphᚋmodelᚐEcho,
+		true,
+		false,
+	)
+}
+
+func (ec *executionContext) fieldContext_Query_echo(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "DBId":
+				return ec.fieldContext_Echo_DBId(ctx, field)
+			case "Id":
+				return ec.fieldContext_Echo_Id(ctx, field)
+			case "Name":
+				return ec.fieldContext_Echo_Name(ctx, field)
+			case "Rarity":
+				return ec.fieldContext_Echo_Rarity(ctx, field)
+			case "Icon":
+				return ec.fieldContext_Echo_Icon(ctx, field)
+			case "IconMiddle":
+				return ec.fieldContext_Echo_IconMiddle(ctx, field)
+			case "IconSmall":
+				return ec.fieldContext_Echo_IconSmall(ctx, field)
+			case "PhantomType":
+				return ec.fieldContext_Echo_PhantomType(ctx, field)
+			case "Element":
+				return ec.fieldContext_Echo_Element(ctx, field)
+			case "Type":
+				return ec.fieldContext_Echo_Type(ctx, field)
+			case "Attributes":
+				return ec.fieldContext_Echo_Attributes(ctx, field)
+			case "EchoGroups":
+				return ec.fieldContext_Echo_EchoGroups(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Echo", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_echo_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_echoes(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Query_echoes,
+		func(ctx context.Context) (any, error) {
+			return ec.Resolvers.Query().Echoes(ctx)
+		},
+		nil,
+		ec.marshalNEcho2ᚕᚖgitlabᚗcomᚋmyᚑgame873206ᚋmyᚑgameᚑdataᚋgraphᚋmodelᚐEcho,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Query_echoes(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "DBId":
+				return ec.fieldContext_Echo_DBId(ctx, field)
+			case "Id":
+				return ec.fieldContext_Echo_Id(ctx, field)
+			case "Name":
+				return ec.fieldContext_Echo_Name(ctx, field)
+			case "Rarity":
+				return ec.fieldContext_Echo_Rarity(ctx, field)
+			case "Icon":
+				return ec.fieldContext_Echo_Icon(ctx, field)
+			case "IconMiddle":
+				return ec.fieldContext_Echo_IconMiddle(ctx, field)
+			case "IconSmall":
+				return ec.fieldContext_Echo_IconSmall(ctx, field)
+			case "PhantomType":
+				return ec.fieldContext_Echo_PhantomType(ctx, field)
+			case "Element":
+				return ec.fieldContext_Echo_Element(ctx, field)
+			case "Type":
+				return ec.fieldContext_Echo_Type(ctx, field)
+			case "Attributes":
+				return ec.fieldContext_Echo_Attributes(ctx, field)
+			case "EchoGroups":
+				return ec.fieldContext_Echo_EchoGroups(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Echo", field.Name)
 		},
 	}
 	return fc, nil
@@ -560,6 +1874,354 @@ func (ec *executionContext) fieldContext_Query___schema(_ context.Context, field
 				return ec.fieldContext___Schema_directives(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type __Schema", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Weapon_DBId(ctx context.Context, field graphql.CollectedField, obj *model.Weapon) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Weapon_DBId,
+		func(ctx context.Context) (any, error) {
+			return obj.DBId, nil
+		},
+		nil,
+		ec.marshalNObjectID2goᚗmongodbᚗorgᚋmongoᚑdriverᚋv2ᚋbsonᚐObjectID,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Weapon_DBId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Weapon",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ObjectID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Weapon_Id(ctx context.Context, field graphql.CollectedField, obj *model.Weapon) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Weapon_Id,
+		func(ctx context.Context) (any, error) {
+			return obj.Id, nil
+		},
+		nil,
+		ec.marshalNInt2int,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Weapon_Id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Weapon",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Weapon_Name(ctx context.Context, field graphql.CollectedField, obj *model.Weapon) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Weapon_Name,
+		func(ctx context.Context) (any, error) {
+			return obj.Name, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Weapon_Name(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Weapon",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Weapon_Icon(ctx context.Context, field graphql.CollectedField, obj *model.Weapon) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Weapon_Icon,
+		func(ctx context.Context) (any, error) {
+			return obj.Icon, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Weapon_Icon(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Weapon",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Weapon_Type(ctx context.Context, field graphql.CollectedField, obj *model.Weapon) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Weapon_Type,
+		func(ctx context.Context) (any, error) {
+			return obj.Type, nil
+		},
+		nil,
+		ec.marshalNInt2int,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Weapon_Type(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Weapon",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Weapon_QualityID(ctx context.Context, field graphql.CollectedField, obj *model.Weapon) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Weapon_QualityID,
+		func(ctx context.Context) (any, error) {
+			return obj.QualityID, nil
+		},
+		nil,
+		ec.marshalNInt2int,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Weapon_QualityID(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Weapon",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Weapon_TypeName(ctx context.Context, field graphql.CollectedField, obj *model.Weapon) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Weapon_TypeName,
+		func(ctx context.Context) (any, error) {
+			return obj.TypeName, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Weapon_TypeName(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Weapon",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Weapon_TypeIcon(ctx context.Context, field graphql.CollectedField, obj *model.Weapon) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Weapon_TypeIcon,
+		func(ctx context.Context) (any, error) {
+			return obj.TypeIcon, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Weapon_TypeIcon(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Weapon",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _WeaponType_DBId(ctx context.Context, field graphql.CollectedField, obj *model.WeaponType) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_WeaponType_DBId,
+		func(ctx context.Context) (any, error) {
+			return obj.DBId, nil
+		},
+		nil,
+		ec.marshalNObjectID2goᚗmongodbᚗorgᚋmongoᚑdriverᚋv2ᚋbsonᚐObjectID,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_WeaponType_DBId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "WeaponType",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ObjectID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _WeaponType_Id(ctx context.Context, field graphql.CollectedField, obj *model.WeaponType) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_WeaponType_Id,
+		func(ctx context.Context) (any, error) {
+			return obj.Id, nil
+		},
+		nil,
+		ec.marshalNInt2int,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_WeaponType_Id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "WeaponType",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _WeaponType_Name(ctx context.Context, field graphql.CollectedField, obj *model.WeaponType) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_WeaponType_Name,
+		func(ctx context.Context) (any, error) {
+			return obj.Name, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_WeaponType_Name(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "WeaponType",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _WeaponType_Icon(ctx context.Context, field graphql.CollectedField, obj *model.WeaponType) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_WeaponType_Icon,
+		func(ctx context.Context) (any, error) {
+			return obj.Icon, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_WeaponType_Icon(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "WeaponType",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
 		},
 	}
 	return fc, nil
@@ -2011,39 +3673,6 @@ func (ec *executionContext) fieldContext___Type_isOneOf(_ context.Context, field
 
 // region    **************************** input.gotpl *****************************
 
-func (ec *executionContext) unmarshalInputNewCharacterData(ctx context.Context, obj any) (model.NewCharacterData, error) {
-	var it model.NewCharacterData
-	asMap := map[string]any{}
-	for k, v := range obj.(map[string]any) {
-		asMap[k] = v
-	}
-
-	fieldsInOrder := [...]string{"name", "roundIcon"}
-	for _, k := range fieldsInOrder {
-		v, ok := asMap[k]
-		if !ok {
-			continue
-		}
-		switch k {
-		case "name":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
-			data, err := ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.Name = data
-		case "roundIcon":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("roundIcon"))
-			data, err := ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.RoundIcon = data
-		}
-	}
-	return it, nil
-}
-
 // endregion **************************** input.gotpl *****************************
 
 // region    ************************** interface.gotpl ***************************
@@ -2063,18 +3692,43 @@ func (ec *executionContext) _Character(ctx context.Context, sel ast.SelectionSet
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Character")
-		case "id":
-			out.Values[i] = ec._Character_id(ctx, field, obj)
+		case "DBId":
+			out.Values[i] = ec._Character_DBId(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "name":
-			out.Values[i] = ec._Character_name(ctx, field, obj)
+		case "Id":
+			out.Values[i] = ec._Character_Id(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "roundIcon":
-			out.Values[i] = ec._Character_roundIcon(ctx, field, obj)
+		case "Name":
+			out.Values[i] = ec._Character_Name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "QualityID":
+			out.Values[i] = ec._Character_QualityID(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "Element":
+			out.Values[i] = ec._Character_Element(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "RoleHeadIcon":
+			out.Values[i] = ec._Character_RoleHeadIcon(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "WeaponType":
+			out.Values[i] = ec._Character_WeaponType(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "BannerImg":
+			out.Values[i] = ec._Character_BannerImg(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -2101,29 +3755,172 @@ func (ec *executionContext) _Character(ctx context.Context, sel ast.SelectionSet
 	return out
 }
 
-var mutationImplementors = []string{"Mutation"}
+var echoImplementors = []string{"Echo"}
 
-func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, mutationImplementors)
-	ctx = graphql.WithFieldContext(ctx, &graphql.FieldContext{
-		Object: "Mutation",
-	})
+func (ec *executionContext) _Echo(ctx context.Context, sel ast.SelectionSet, obj *model.Echo) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, echoImplementors)
 
 	out := graphql.NewFieldSet(fields)
 	deferred := make(map[string]*graphql.FieldSet)
 	for i, field := range fields {
-		innerCtx := graphql.WithRootFieldContext(ctx, &graphql.RootFieldContext{
-			Object: field.Name,
-			Field:  field,
-		})
-
 		switch field.Name {
 		case "__typename":
-			out.Values[i] = graphql.MarshalString("Mutation")
-		case "CreateCharacter":
-			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_CreateCharacter(ctx, field)
-			})
+			out.Values[i] = graphql.MarshalString("Echo")
+		case "DBId":
+			out.Values[i] = ec._Echo_DBId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "Id":
+			out.Values[i] = ec._Echo_Id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "Name":
+			out.Values[i] = ec._Echo_Name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "Rarity":
+			out.Values[i] = ec._Echo_Rarity(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "Icon":
+			out.Values[i] = ec._Echo_Icon(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "IconMiddle":
+			out.Values[i] = ec._Echo_IconMiddle(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "IconSmall":
+			out.Values[i] = ec._Echo_IconSmall(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "PhantomType":
+			out.Values[i] = ec._Echo_PhantomType(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "Element":
+			out.Values[i] = ec._Echo_Element(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "Type":
+			out.Values[i] = ec._Echo_Type(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "Attributes":
+			out.Values[i] = ec._Echo_Attributes(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "EchoGroups":
+			out.Values[i] = ec._Echo_EchoGroups(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.Deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.ProcessDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var echoSetImplementors = []string{"EchoSet"}
+
+func (ec *executionContext) _EchoSet(ctx context.Context, sel ast.SelectionSet, obj *model.EchoSet) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, echoSetImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("EchoSet")
+		case "Id":
+			out.Values[i] = ec._EchoSet_Id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "Icon":
+			out.Values[i] = ec._EchoSet_Icon(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "Name":
+			out.Values[i] = ec._EchoSet_Name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.Deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.ProcessDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var elementImplementors = []string{"Element"}
+
+func (ec *executionContext) _Element(ctx context.Context, sel ast.SelectionSet, obj *model.Element) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, elementImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Element")
+		case "Id":
+			out.Values[i] = ec._Element_Id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "Icon":
+			out.Values[i] = ec._Element_Icon(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "Name":
+			out.Values[i] = ec._Element_Name(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -2169,7 +3966,51 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Query")
-		case "_empty":
+		case "characters":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_characters(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "weapons":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_weapons(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "character":
 			field := field
 
 			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
@@ -2178,7 +4019,67 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query__empty(ctx, field)
+				res = ec._Query_character(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "weapon":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_weapon(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "echo":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_echo(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "echoes":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_echoes(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
 				return res
 			}
 
@@ -2196,6 +4097,134 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Query___schema(ctx, field)
 			})
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.Deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.ProcessDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var weaponImplementors = []string{"Weapon"}
+
+func (ec *executionContext) _Weapon(ctx context.Context, sel ast.SelectionSet, obj *model.Weapon) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, weaponImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Weapon")
+		case "DBId":
+			out.Values[i] = ec._Weapon_DBId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "Id":
+			out.Values[i] = ec._Weapon_Id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "Name":
+			out.Values[i] = ec._Weapon_Name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "Icon":
+			out.Values[i] = ec._Weapon_Icon(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "Type":
+			out.Values[i] = ec._Weapon_Type(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "QualityID":
+			out.Values[i] = ec._Weapon_QualityID(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "TypeName":
+			out.Values[i] = ec._Weapon_TypeName(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "TypeIcon":
+			out.Values[i] = ec._Weapon_TypeIcon(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.Deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.ProcessDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var weaponTypeImplementors = []string{"WeaponType"}
+
+func (ec *executionContext) _WeaponType(ctx context.Context, sel ast.SelectionSet, obj *model.WeaponType) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, weaponTypeImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("WeaponType")
+		case "DBId":
+			out.Values[i] = ec._WeaponType_DBId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "Id":
+			out.Values[i] = ec._WeaponType_Id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "Name":
+			out.Values[i] = ec._WeaponType_Name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "Icon":
+			out.Values[i] = ec._WeaponType_Icon(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -2570,8 +4599,20 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) marshalNCharacter2gitlabᚗcomᚋmyᚑgame873206ᚋmyᚑgameᚑdataᚋgraphᚋmodelᚐCharacter(ctx context.Context, sel ast.SelectionSet, v model.Character) graphql.Marshaler {
-	return ec._Character(ctx, sel, &v)
+func (ec *executionContext) marshalNCharacter2ᚕᚖgitlabᚗcomᚋmyᚑgame873206ᚋmyᚑgameᚑdataᚋgraphᚋmodelᚐCharacterᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Character) graphql.Marshaler {
+	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
+		fc := graphql.GetFieldContext(ctx)
+		fc.Result = &v[i]
+		return ec.marshalNCharacter2ᚖgitlabᚗcomᚋmyᚑgame873206ᚋmyᚑgameᚑdataᚋgraphᚋmodelᚐCharacter(ctx, sel, v[i])
+	})
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
 }
 
 func (ec *executionContext) marshalNCharacter2ᚖgitlabᚗcomᚋmyᚑgame873206ᚋmyᚑgameᚑdataᚋgraphᚋmodelᚐCharacter(ctx context.Context, sel ast.SelectionSet, v *model.Character) graphql.Marshaler {
@@ -2584,14 +4625,38 @@ func (ec *executionContext) marshalNCharacter2ᚖgitlabᚗcomᚋmyᚑgame873206�
 	return ec._Character(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNID2string(ctx context.Context, v any) (string, error) {
-	res, err := graphql.UnmarshalID(v)
+func (ec *executionContext) marshalNEcho2ᚕᚖgitlabᚗcomᚋmyᚑgame873206ᚋmyᚑgameᚑdataᚋgraphᚋmodelᚐEcho(ctx context.Context, sel ast.SelectionSet, v []*model.Echo) graphql.Marshaler {
+	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
+		fc := graphql.GetFieldContext(ctx)
+		fc.Result = &v[i]
+		return ec.marshalOEcho2ᚖgitlabᚗcomᚋmyᚑgame873206ᚋmyᚑgameᚑdataᚋgraphᚋmodelᚐEcho(ctx, sel, v[i])
+	})
+
+	return ret
+}
+
+func (ec *executionContext) marshalNEchoSet2ᚕgitlabᚗcomᚋmyᚑgame873206ᚋmyᚑgameᚑdataᚋgraphᚋmodelᚐEchoSet(ctx context.Context, sel ast.SelectionSet, v []model.EchoSet) graphql.Marshaler {
+	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
+		fc := graphql.GetFieldContext(ctx)
+		fc.Result = &v[i]
+		return ec.marshalOEchoSet2gitlabᚗcomᚋmyᚑgame873206ᚋmyᚑgameᚑdataᚋgraphᚋmodelᚐEchoSet(ctx, sel, v[i])
+	})
+
+	return ret
+}
+
+func (ec *executionContext) marshalNElement2gitlabᚗcomᚋmyᚑgame873206ᚋmyᚑgameᚑdataᚋgraphᚋmodelᚐElement(ctx context.Context, sel ast.SelectionSet, v model.Element) graphql.Marshaler {
+	return ec._Element(ctx, sel, &v)
+}
+
+func (ec *executionContext) unmarshalNInt2int(ctx context.Context, v any) (int, error) {
+	res, err := graphql.UnmarshalInt(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
+func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.SelectionSet, v int) graphql.Marshaler {
 	_ = sel
-	res := graphql.MarshalID(v)
+	res := graphql.MarshalInt(v)
 	if res == graphql.Null {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
@@ -2600,9 +4665,36 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 	return res
 }
 
-func (ec *executionContext) unmarshalNNewCharacterData2gitlabᚗcomᚋmyᚑgame873206ᚋmyᚑgameᚑdataᚋgraphᚋmodelᚐNewCharacterData(ctx context.Context, v any) (model.NewCharacterData, error) {
-	res, err := ec.unmarshalInputNewCharacterData(ctx, v)
+func (ec *executionContext) unmarshalNInt2int32(ctx context.Context, v any) (int32, error) {
+	res, err := graphql.UnmarshalInt32(v)
 	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNInt2int32(ctx context.Context, sel ast.SelectionSet, v int32) graphql.Marshaler {
+	_ = sel
+	res := graphql.MarshalInt32(v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
+		}
+	}
+	return res
+}
+
+func (ec *executionContext) unmarshalNObjectID2goᚗmongodbᚗorgᚋmongoᚑdriverᚋv2ᚋbsonᚐObjectID(ctx context.Context, v any) (bson.ObjectID, error) {
+	res, err := model.UnmarshalObjectID(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNObjectID2goᚗmongodbᚗorgᚋmongoᚑdriverᚋv2ᚋbsonᚐObjectID(ctx context.Context, sel ast.SelectionSet, v bson.ObjectID) graphql.Marshaler {
+	_ = sel
+	res := model.MarshalObjectID(v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
+		}
+	}
+	return res
 }
 
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v any) (string, error) {
@@ -2619,6 +4711,36 @@ func (ec *executionContext) marshalNString2string(ctx context.Context, sel ast.S
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) marshalNWeapon2ᚕᚖgitlabᚗcomᚋmyᚑgame873206ᚋmyᚑgameᚑdataᚋgraphᚋmodelᚐWeaponᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Weapon) graphql.Marshaler {
+	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
+		fc := graphql.GetFieldContext(ctx)
+		fc.Result = &v[i]
+		return ec.marshalNWeapon2ᚖgitlabᚗcomᚋmyᚑgame873206ᚋmyᚑgameᚑdataᚋgraphᚋmodelᚐWeapon(ctx, sel, v[i])
+	})
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNWeapon2ᚖgitlabᚗcomᚋmyᚑgame873206ᚋmyᚑgameᚑdataᚋgraphᚋmodelᚐWeapon(ctx context.Context, sel ast.SelectionSet, v *model.Weapon) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._Weapon(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNWeaponType2gitlabᚗcomᚋmyᚑgame873206ᚋmyᚑgameᚑdataᚋgraphᚋmodelᚐWeaponType(ctx context.Context, sel ast.SelectionSet, v model.WeaponType) graphql.Marshaler {
+	return ec._WeaponType(ctx, sel, &v)
 }
 
 func (ec *executionContext) marshalN__Directive2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐDirective(ctx context.Context, sel ast.SelectionSet, v introspection.Directive) graphql.Marshaler {
@@ -2792,6 +4914,24 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	return res
 }
 
+func (ec *executionContext) marshalOCharacter2ᚖgitlabᚗcomᚋmyᚑgame873206ᚋmyᚑgameᚑdataᚋgraphᚋmodelᚐCharacter(ctx context.Context, sel ast.SelectionSet, v *model.Character) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Character(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOEcho2ᚖgitlabᚗcomᚋmyᚑgame873206ᚋmyᚑgameᚑdataᚋgraphᚋmodelᚐEcho(ctx context.Context, sel ast.SelectionSet, v *model.Echo) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Echo(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOEchoSet2gitlabᚗcomᚋmyᚑgame873206ᚋmyᚑgameᚑdataᚋgraphᚋmodelᚐEchoSet(ctx context.Context, sel ast.SelectionSet, v model.EchoSet) graphql.Marshaler {
+	return ec._EchoSet(ctx, sel, &v)
+}
+
 func (ec *executionContext) unmarshalOString2ᚖstring(ctx context.Context, v any) (*string, error) {
 	if v == nil {
 		return nil, nil
@@ -2808,6 +4948,13 @@ func (ec *executionContext) marshalOString2ᚖstring(ctx context.Context, sel as
 	_ = ctx
 	res := graphql.MarshalString(*v)
 	return res
+}
+
+func (ec *executionContext) marshalOWeapon2ᚖgitlabᚗcomᚋmyᚑgame873206ᚋmyᚑgameᚑdataᚋgraphᚋmodelᚐWeapon(ctx context.Context, sel ast.SelectionSet, v *model.Weapon) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Weapon(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalO__EnumValue2ᚕgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐEnumValueᚄ(ctx context.Context, sel ast.SelectionSet, v []introspection.EnumValue) graphql.Marshaler {

@@ -153,7 +153,11 @@ models:
   Int:
     model:
       - github.com/99designs/gqlgen/graphql.Int32
+      - github.com/99designs/gqlgen/graphql.Int
   Int64:
     model:
       - github.com/99designs/gqlgen/graphql.Int
       - github.com/99designs/gqlgen/graphql.Int64
+  ObjectID:
+      model:
+        - gitlab.com/my-game873206/my-game-data/graph/model.ObjectID
