@@ -1,31 +1,32 @@
+scalar ObjectID
 
 type Element {
-  DBId: ID!
-  ID: Int!
+  Id: Int!
   Icon: String!
   Name: String!
 }
 
 type WeaponType {
-  DBId: ID!
-  ID: Int!
+  DBId: ObjectID!
+  Id: Int!
   Name: String!
   Icon: String!
 }
 
 type Character {
-  DBId: ID!
-  ID: Int!
+  DBId: ObjectID!
+  Id: Int!
   Name: String!
   QualityID: Int!
   Element: Element!
   RoleHeadIcon: String!
   WeaponType: WeaponType!
+  BannerImg: String!
 }
 
 type Weapon {
-  DBId: ID!
-  ID: Int!
+  DBId: ObjectID!
+  Id: Int!
   Name: String!
   Icon: String!
   Type: Int!
@@ -34,49 +35,32 @@ type Weapon {
   TypeIcon: String!
 }
 
-input ElementInput {
-  ID: Int!
+type EchoSet {
+  Id: Int!
   Icon: String!
   Name: String!
 }
 
-input WeaponTypeInput {
-  ID: Int!
+type Echo {
+  DBId: ObjectID!
+  Id: Int!
   Name: String!
+  Rarity: Int!
   Icon: String!
+  IconMiddle: String!
+  IconSmall: String!
+  PhantomType: Int!
+  Element: Element!
+  Type: String!
+  Attributes: String!
+  EchoGroups: [EchoSet]!
 }
-
-input CharacterInput {
-  ID: Int!
-  Name: String!
-  QualityID: Int!
-  Element: ElementInput!
-  RoleHeadIcon: String!
-  WeaponType: WeaponTypeInput!
-}
-
-input WeaponInput {
-  ID: Int!
-  Name: String!
-  Icon: String!
-  Type: Int!
-  QualityID: Int!
-  TypeName: String!
-  TypeIcon: String!
-}
-
 
 type Query {
   characters: [Character!]!
   weapons: [Weapon!]!
   character(id: Int!): Character
   weapon(id: Int!): Weapon
-}
-
-
-type Mutation {
-  importCharacter(input: CharacterInput!): Character!
-  importCharacters(inputs: [CharacterInput!]!): [Character!]!
-  importWeapon(input: WeaponInput!): Weapon!
-  importWeapons(inputs: [WeaponInput!]!): [Weapon!]!
+  echo(id: Int!): Echo
+  echoes: [Echo]!
 }

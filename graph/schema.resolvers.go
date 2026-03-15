@@ -7,7 +7,6 @@ package graph
 
 import (
 	"context"
-	"fmt"
 	"os"
 
 	"gitlab.com/my-game873206/my-game-data/graph/generated"
@@ -15,151 +14,6 @@ import (
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 )
-
-// DBId is the resolver for the DBId field.
-func (r *characterResolver) DBId(ctx context.Context, obj *model.Character) (string, error) {
-	return obj.DBId.Hex(), nil
-}
-
-// DBId is the resolver for the DBId field.
-func (r *elementResolver) DBId(ctx context.Context, obj *model.Element) (string, error) {
-	return obj.DBId.Hex(), nil
-}
-
-// ImportCharacter is the resolver for the importCharacter field.
-func (r *mutationResolver) ImportCharacter(ctx context.Context, input model.CharacterInput) (*model.Character, error) {
-
-	userId := ctx.Value("user_id")
-	if userId == nil {
-		return nil, fmt.Errorf("Access denied")
-	}
-
-	char := &model.Character{
-		DBId:         bson.NewObjectID(),
-		ID:           int(input.ID),
-		Name:         input.Name,
-		QualityID:    int(input.QualityID),
-		RoleHeadIcon: input.RoleHeadIcon,
-	}
-
-	if input.Element != nil {
-		char.Element = model.Element{ID: int(input.Element.ID), Icon: input.Element.Icon, Name: input.Element.Name}
-	}
-	if input.WeaponType != nil {
-		char.WeaponType = model.WeaponType{ID: int(input.WeaponType.ID), Name: input.WeaponType.Name, Icon: input.WeaponType.Icon}
-	}
-
-	charCollection := os.Getenv("CHAR_COLL")
-	_, err := r.DB.Collection(charCollection).InsertOne(ctx, char)
-	if err != nil {
-		return nil, err
-	}
-
-	return char, nil
-}
-
-// ImportCharacters is the resolver for the importCharacters field.
-func (r *mutationResolver) ImportCharacters(ctx context.Context, inputs []*model.CharacterInput) ([]*model.Character, error) {
-	userId := ctx.Value("user_id")
-	if userId == nil {
-		return nil, fmt.Errorf("Access denied")
-	}
-
-	var docs []interface{}
-	var chars []*model.Character
-
-	for _, input := range inputs {
-		char := &model.Character{
-			DBId:         bson.NewObjectID(),
-			ID:           int(input.ID),
-			Name:         input.Name,
-			QualityID:    int(input.QualityID),
-			RoleHeadIcon: input.RoleHeadIcon,
-		}
-		if input.Element != nil {
-			char.Element = model.Element{ID: int(input.Element.ID), Icon: input.Element.Icon, Name: input.Element.Name}
-		}
-		if input.WeaponType != nil {
-			char.WeaponType = model.WeaponType{ID: int(input.WeaponType.ID), Name: input.WeaponType.Name, Icon: input.WeaponType.Icon}
-		}
-
-		docs = append(docs, char)
-		chars = append(chars, char)
-	}
-
-	charCollection := os.Getenv("CHAR_COLL")
-	if len(docs) > 0 {
-		_, err := r.DB.Collection(charCollection).InsertMany(ctx, docs)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	return chars, nil
-}
-
-// ImportWeapon is the resolver for the importWeapon field.
-func (r *mutationResolver) ImportWeapon(ctx context.Context, input model.WeaponInput) (*model.Weapon, error) {
-	userId := ctx.Value("user_id")
-	if userId == nil {
-		return nil, fmt.Errorf("Access denied")
-	}
-
-	weapon := &model.Weapon{
-		DBId:      bson.NewObjectID(),
-		ID:        int(input.ID),
-		Name:      input.Name,
-		Icon:      input.Icon,
-		Type:      int(input.Type),
-		QualityID: int(input.QualityID),
-		TypeName:  input.TypeName,
-		TypeIcon:  input.TypeIcon,
-	}
-
-	weapCollection := os.Getenv("WEAP_COLL")
-	_, err := r.DB.Collection(weapCollection).InsertOne(ctx, weapon)
-	if err != nil {
-		return nil, err
-	}
-
-	return weapon, nil
-}
-
-// ImportWeapons is the resolver for the importWeapons field.
-func (r *mutationResolver) ImportWeapons(ctx context.Context, inputs []*model.WeaponInput) ([]*model.Weapon, error) {
-	userId := ctx.Value("user_id")
-	if userId == nil {
-		return nil, fmt.Errorf("Access denied")
-	}
-
-	var docs []interface{}
-	var weapons []*model.Weapon
-
-	for _, input := range inputs {
-		weapon := &model.Weapon{
-			DBId:      bson.NewObjectID(),
-			ID:        int(input.ID),
-			Name:      input.Name,
-			Icon:      input.Icon,
-			Type:      int(input.Type),
-			QualityID: int(input.QualityID),
-			TypeName:  input.TypeName,
-			TypeIcon:  input.TypeIcon,
-		}
-		docs = append(docs, weapon)
-		weapons = append(weapons, weapon)
-	}
-
-	weapCollection := os.Getenv("WEAP_COLL")
-	if len(docs) > 0 {
-		_, err := r.DB.Collection(weapCollection).InsertMany(ctx, docs)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	return weapons, nil
-}
 
 // Characters is the resolver for the characters field.
 func (r *queryResolver) Characters(ctx context.Context) ([]*model.Character, error) {
@@ -221,67 +75,37 @@ func (r *queryResolver) Weapon(ctx context.Context, id int32) (*model.Weapon, er
 	return &weapon, nil
 }
 
-// DBId is the resolver for the DBId field.
-func (r *weaponResolver) DBId(ctx context.Context, obj *model.Weapon) (string, error) {
-	return obj.DBId.Hex(), nil
+// Echo is the resolver for the echo field.
+func (r *queryResolver) Echo(ctx context.Context, id int32) (*model.Echo, error) {
+	var echo model.Echo
+	echoCollection := os.Getenv("ECHO_COLL")
+	err := r.DB.Collection(echoCollection).FindOne(ctx, bson.M{"Id": id}).Decode(&echo)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, nil
+		}
+		return nil, err
+	}
+	return &echo, nil
 }
 
-// DBId is the resolver for the DBId field.
-func (r *weaponTypeResolver) DBId(ctx context.Context, obj *model.WeaponType) (string, error) {
-	return obj.DBId.Hex(), nil
+// Echoes is the resolver for the echoes field.
+func (r *queryResolver) Echoes(ctx context.Context) ([]*model.Echo, error) {
+	var echoes []*model.Echo
+	echoCollection := os.Getenv("ECHO_COLL")
+	cursor, err := r.DB.Collection(echoCollection).Find(ctx, bson.M{})
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(ctx)
+
+	if err = cursor.All(ctx, &echoes); err != nil {
+		return nil, err
+	}
+	return echoes, nil
 }
-
-// Character returns generated.CharacterResolver implementation.
-func (r *Resolver) Character() generated.CharacterResolver { return &characterResolver{r} }
-
-// Element returns generated.ElementResolver implementation.
-func (r *Resolver) Element() generated.ElementResolver { return &elementResolver{r} }
-
-// Mutation returns generated.MutationResolver implementation.
-func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 
 // Query returns generated.QueryResolver implementation.
 func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
 
-// Weapon returns generated.WeaponResolver implementation.
-func (r *Resolver) Weapon() generated.WeaponResolver { return &weaponResolver{r} }
-
-// WeaponType returns generated.WeaponTypeResolver implementation.
-func (r *Resolver) WeaponType() generated.WeaponTypeResolver { return &weaponTypeResolver{r} }
-
-type characterResolver struct{ *Resolver }
-type elementResolver struct{ *Resolver }
-type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
-type weaponResolver struct{ *Resolver }
-type weaponTypeResolver struct{ *Resolver }
-
-// !!! WARNING !!!
-// The code below was going to be deleted when updating resolvers. It has been copied here so you have
-// one last chance to move it out of harms way if you want. There are two reasons this happens:
-//  - When renaming or deleting a resolver the old code will be put in here. You can safely delete
-//    it when you're done.
-//  - You have helper methods in this file. Move them out to keep these resolver files clean.
-/*
-	func (r *characterResolver) ID(ctx context.Context, obj *model.Character) (int32, error) {
-	panic(fmt.Errorf("not implemented: ID - Id"))
-}
-func (r *characterResolver) QualityID(ctx context.Context, obj *model.Character) (int32, error) {
-	panic(fmt.Errorf("not implemented: QualityID - QualityId"))
-}
-func (r *elementResolver) ID(ctx context.Context, obj *model.Element) (int32, error) {
-	panic(fmt.Errorf("not implemented: ID - Id"))
-}
-func (r *weaponResolver) ID(ctx context.Context, obj *model.Weapon) (int32, error) {
-	panic(fmt.Errorf("not implemented: ID - Id"))
-}
-func (r *weaponResolver) Type(ctx context.Context, obj *model.Weapon) (int32, error) {
-	panic(fmt.Errorf("not implemented: Type - Type"))
-}
-func (r *weaponResolver) QualityID(ctx context.Context, obj *model.Weapon) (int32, error) {
-	panic(fmt.Errorf("not implemented: QualityID - QualityId"))
-}
-func (r *weaponTypeResolver) ID(ctx context.Context, obj *model.WeaponType) (int32, error) {
-	panic(fmt.Errorf("not implemented: ID - Id"))
-}
-*/

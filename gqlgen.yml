@@ -135,7 +135,6 @@ models:
       - github.com/99designs/gqlgen/graphql.Int
       - github.com/99designs/gqlgen/graphql.Int64
       - github.com/99designs/gqlgen/graphql.Int32
-      - go.mongodb.org/mongo-driver/bson/primitive.ObjectID
   # gqlgen provides a default GraphQL UUID convenience wrapper for github.com/google/uuid 
   # but you can override this to provide your own GraphQL UUID implementation
   UUID:
@@ -159,3 +158,6 @@ models:
     model:
       - github.com/99designs/gqlgen/graphql.Int
       - github.com/99designs/gqlgen/graphql.Int64
+  ObjectID:
+      model:
+        - gitlab.com/my-game873206/my-game-data/graph/model.ObjectID

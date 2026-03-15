@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"os"
+
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/handler/extension"
 	"github.com/99designs/gqlgen/graphql/handler/transport"
@@ -12,14 +14,16 @@ import (
 	"gitlab.com/my-game873206/my-game-data/graph/generated"
 	"gitlab.com/my-game873206/my-game-data/internal/db"
 	"gitlab.com/my-game873206/my-game-data/middleware"
-	"os"
 )
-
 
 const defaultPort = "8080"
 
 func main() {
 	godotenv.Load(".env")
+
+	if err := middleware.InitFirebase(); err != nil {
+		panic("Failed to init Firebase: " + err.Error())
+	}
 
 	r := gin.New()
 	r.Use(gin.Logger())

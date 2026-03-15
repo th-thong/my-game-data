@@ -2,39 +2,5 @@
 
 package model
 
-type CharacterInput struct {
-	ID           int32            `json:"ID"`
-	Name         string           `json:"Name"`
-	QualityID    int32            `json:"QualityID"`
-	Element      *ElementInput    `json:"Element"`
-	RoleHeadIcon string           `json:"RoleHeadIcon"`
-	WeaponType   *WeaponTypeInput `json:"WeaponType"`
-}
-
-type ElementInput struct {
-	ID   int32  `json:"ID"`
-	Icon string `json:"Icon"`
-	Name string `json:"Name"`
-}
-
-type Mutation struct {
-}
-
 type Query struct {
-}
-
-type WeaponInput struct {
-	ID        int32  `json:"ID"`
-	Name      string `json:"Name"`
-	Icon      string `json:"Icon"`
-	Type      int32  `json:"Type"`
-	QualityID int32  `json:"QualityID"`
-	TypeName  string `json:"TypeName"`
-	TypeIcon  string `json:"TypeIcon"`
-}
-
-type WeaponTypeInput struct {
-	ID   int32  `json:"ID"`
-	Name string `json:"Name"`
-	Icon string `json:"Icon"`
 }
